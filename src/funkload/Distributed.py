@@ -500,7 +500,7 @@ class DistributionMgr(threading.Thread):
             trace(".")
             worker.execute(
                 # "%s virtualenv.py %s" % (
-                "%s tmpvenv.py %s" % (
+                "%s tmpvenv.py --no-wheel %s" % (
                     self.python_bin, os.path.join(remote_res_dir, self.tarred_testsdir)),
                 cwdir=remote_res_dir)
 
@@ -605,6 +605,7 @@ class DistributionMgr(threading.Thread):
             trace("\n")
 
         self.stopMonitors()
+        self.final_collect()
         self.correlate_statistics()
 
     def final_collect(self):
@@ -750,7 +751,7 @@ class DistributionMgr(threading.Thread):
         stats_path = os.path.join(self.distribution_output, "stats.xml")
         stats_tree = ElementTree(file=stats_path)
 
-        results = results_tree.findall("testResult")
+        results = results_tree.findall("testResult") or results_tree.findall("response")
         stats = stats_tree.findall("monitor")
         ratio = self._calculate_time_skew(results, stats)
 

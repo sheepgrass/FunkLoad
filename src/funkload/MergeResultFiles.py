@@ -99,7 +99,11 @@ def replace_all(text, dic):
 class MergeResultFiles:
     def __init__(self, input_files, output_file):
         xml_parser = FunkLoadConfigXmlParser()
+        stats_files = []
         for input_file in input_files:
+            if input_file.endswith('stats.xml'):
+                stats_files.append(input_file)
+                continue
             trace (".")
             xml_parser.parse(input_file)
 
@@ -141,6 +145,18 @@ class MergeResultFiles:
                     continue
                 output.write(replace_all(line, dic))
             f.close()
+
+            if i == 0:
+                for stats_file in stats_files:
+                    f = open(stats_file)
+                    for line in f:
+                        if "</funkload>" in line:
+                            continue
+                        elif '<funkload' in line or '<config' in line:
+                            continue
+                        output.write(line)
+                    f.close()
+
             i += 1
         output.write("</funkload>\n")
         output.close()

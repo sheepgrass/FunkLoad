@@ -893,7 +893,6 @@ def run_distributed(options, module_name, class_name, method_name, sys_args):
         try:
             distmgr.prepare_workers(allow_errors=True)
             ret = distmgr.run()
-            distmgr.final_collect()
         except KeyboardInterrupt:
             trace("* ^C received *")
     finally:
