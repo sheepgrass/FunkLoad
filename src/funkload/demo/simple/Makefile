@@ -14,6 +14,66 @@ all: test
 test:
 	fl-run-test test_Simple.py -v $(FLOPS)
 
+# benching for 1 concurrent users
+bench_1:
+	-rm -rf log-distributed
+	-rm -rf *.xml*
+	-rm -rf report-CU1
+	-rm -rf report_CU1.tar.gz
+	@$(MONCTL) restart
+	-fl-run-bench -c 1 --simple-fetch --label=CU1 test_Simple.py Simple.test_simple --distribute $(FLOPS)
+	@$(MONCTL) stop
+	-fl-build-report log-distributed/*.xml --html --quiet -r report-CU1
+	-tar -zcvf report-CU1.tar.gz report-CU1
+
+# benching for 1, 10, 20 concurrent users
+bench_1_10_20:
+	-rm -rf log-distributed
+	-rm -rf *.xml*
+	-rm -rf report-CU1_10_20
+	-rm -rf report-CU1_10_20.tar.gz
+	@$(MONCTL) restart
+	-fl-run-bench -c 1:10:20 --simple-fetch --label=CU1_10_20 test_Simple.py Simple.test_simple --distribute $(FLOPS)
+	@$(MONCTL) stop
+	-fl-build-report log-distributed/*.xml --html --quiet -r report-CU1_10_20
+	-tar -zcvf report-CU1_10_20.tar.gz report-CU1_10_20
+
+# benching for 50, 100 concurrent users
+bench_50_100:
+	-rm -rf log-distributed
+	-rm -rf *.xml*
+	-rm -rf report-CU50_100
+	-rm -rf report-CU50_100.tar.gz
+	@$(MONCTL) restart
+	-fl-run-bench -c 50:100 --simple-fetch --label=CU50_100 test_Simple.py Simple.test_simple --distribute $(FLOPS)
+	@$(MONCTL) stop
+	-fl-build-report log-distributed/*.xml --html --quiet -r report-CU50_100
+	-tar -zcvf report-CU50_100.tar.gz report-CU50_100
+
+# benching for 500 concurrent users
+bench_500:
+	-rm -rf log-distributed
+	-rm -rf *.xml*
+	-rm -rf report-CU500
+	-rm -rf report-CU500.tar.gz
+	@$(MONCTL) restart
+	-fl-run-bench -c 500 --simple-fetch --label=CU500 test_Simple.py Simple.test_simple --distribute $(FLOPS)
+	@$(MONCTL) stop
+	-fl-build-report log-distributed/*.xml --html --quiet -r report-CU500
+	-tar -zcvf report-CU500.tar.gz report-CU500
+
+# benching for 1000 concurrent users
+bench_1000:
+	-rm -rf log-distributed
+	-rm -rf *.xml*
+	-rm -rf report-CU1000
+	-rm -rf report-CU1000.tar.gz
+	@$(MONCTL) restart
+	-fl-run-bench -c 1000 --simple-fetch --label=CU1000 test_Simple.py Simple.test_simple --distribute $(FLOPS)
+	@$(MONCTL) stop
+	-fl-build-report log-distributed/*.xml --html --quiet -r report-CU1000
+	-tar -zcvf report-CU1000.tar.gz report-CU1000
+
 # benching
 bench: bench_fast
 
